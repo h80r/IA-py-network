@@ -102,3 +102,22 @@ class Network:
         self.feed_forward(input)
 
         return [self.evaluate(i) for i in range(len(self.output_layer))]
+
+    def save(self, filename: str) -> None:
+        with open(filename, "w") as file:
+            file.write(
+                f"{self.max_epoch}\n"
+                f"{self.bias}\n"
+                f"{len(self.hidden_layer)}\n"
+                f"{len(self.output_layer)}\n"
+            )
+
+            for neuron in self.hidden_layer:
+                file.write(f"{len(neuron.weights)}\n")
+                for weight in neuron.weights:
+                    file.write(f"{weight}\n")
+
+            for neuron in self.output_layer:
+                file.write(f"{len(neuron.weights)}\n")
+                for weight in neuron.weights:
+                    file.write(f"{weight}\n")

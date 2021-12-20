@@ -10,9 +10,11 @@ def main() -> None:
     ]
 
     network = Network(training_data, 0.5, 1000, 1)
-    print(f"Mean Squared Error: {network.train()}")
+    # print(f"Mean Squared Error: {network.train()}")
 
-    network.save("backup.txt")
+    # network.save("backup.txt")
+
+    network.load("backup.txt")
 
     print(network.predict([0, 0]))
     print(network.predict([0, 1]))

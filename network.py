@@ -121,3 +121,22 @@ class Network:
                 file.write(f"{len(neuron.weights)}\n")
                 for weight in neuron.weights:
                     file.write(f"{weight}\n")
+
+    def load(self, filename: str) -> None:
+        with open(filename, "r") as file:
+            self.max_epoch = int(file.readline())
+            self.bias = float(file.readline())
+            hidden_count = int(file.readline())
+            output_count = int(file.readline())
+
+            for i in range(hidden_count):
+                weights_count = int(file.readline())
+                self.hidden_layer[i].weights = [
+                    float(file.readline()) for i in range(weights_count)
+                ]
+
+            for i in range(output_count):
+                weights_count = int(file.readline())
+                self.output_layer[i].weights = [
+                    float(file.readline()) for i in range(weights_count)
+                ]

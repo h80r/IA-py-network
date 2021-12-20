@@ -55,9 +55,7 @@ class Network:
             error = sum(
                 [
                     neuron.weights[i + 1] * deltas[index]
-                    for neuron, index in zip(
-                        self.output_layer, range(len(self.output_layer))
-                    )
+                    for index, neuron in enumerate(self.output_layer)
                 ]
             )
 

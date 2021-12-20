@@ -8,6 +8,10 @@ class Neuron:
         self.weights = [random() * 2 - 1 for i in range(weights_count)]
         self.learning_rate = learning_rate
 
+    def restart(self) -> None:
+        self.inputs = []
+        self.weights = [random() * 2 - 1 for i in range(len(self.weights))]
+
     def evaluate(self) -> float:
         return tanh(
             sum([value * weight for value, weight in zip(self.inputs, self.weights)])

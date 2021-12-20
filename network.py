@@ -26,23 +26,23 @@ class Network:
         ]
 
     def set_inputs(self, inputs: List[float]) -> None:
-        new_inputs = [self.bias].extend(inputs)
+        new_inputs = [self.bias]
+        new_inputs.extend(inputs)
 
         for neuron in self.hidden_layer:
-            neuron.inputs = new_inputs
+            neuron.set_inputs(new_inputs)
 
     def feed_forward(self, values: List[float]) -> None:
         self.set_inputs(values)
 
-        new_inputs = [self.bias].extend(
-            [neuron.evaluate() for neuron in self.hidden_layer]
-        )
+        new_inputs = [self.bias]
+        new_inputs.extend([neuron.evaluate() for neuron in self.hidden_layer])
 
         for neuron in self.output_layer:
-            neuron.inputs = new_inputs
+            neuron.set_inputs(new_inputs)
 
     def back_propagate(self, expected: List[float]) -> None:
-        deltas = List[float]()
+        deltas = []
 
         for i in range(len(self.output_layer)):
             result = self.output_layer[i].evaluate()
@@ -54,8 +54,10 @@ class Network:
         for i in range(len(self.hidden_layer)):
             error = sum(
                 [
-                    self.output_layer[i].weights[i + 1] * deltas[j]
-                    for j in range(len(deltas))
+                    neuron.weights[i + 1] * deltas[index]
+                    for neuron, index in zip(
+                        self.output_layer, range(len(self.output_layer))
+                    )
                 ]
             )
 
@@ -74,18 +76,18 @@ class Network:
     def train(self) -> float:
         mean_squared_error = 0.0
 
-        for epoch in range(self.max_epoch):
+        epoch = 0
+        while epoch < self.max_epoch:
             aux = 0.0
             for inputs, expected in self.training_data:
                 self.feed_forward(inputs)
 
-                result = sum(
-                    [
-                        (x - self.evaluate(index)) ** 2
-                        for x, index in zip(expected, range(len(expected)))
-                    ]
-                )
-                aux += result
+                results = []
+
+                for i in range(len(expected)):
+                    results.append((expected[i] - self.evaluate(i)) ** 2)
+
+                aux += sum(results)
 
                 self.back_propagate(expected)
             mean_squared_error = aux / len(self.training_data)
@@ -93,6 +95,8 @@ class Network:
             if epoch > self.max_epoch / 5 and mean_squared_error > 1:
                 self.restart()
                 epoch = 0
+
+            epoch += 1
 
         return mean_squared_error
 

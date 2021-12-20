@@ -1,5 +1,6 @@
 from math import tanh
 from random import random
+from typing import List
 
 
 class Neuron:
@@ -7,6 +8,9 @@ class Neuron:
         self.inputs = []
         self.weights = [random() * 2 - 1 for i in range(weights_count)]
         self.learning_rate = learning_rate
+
+    def set_inputs(self, inputs: List[float]) -> None:
+        self.inputs = inputs
 
     def restart(self) -> None:
         self.inputs = []
@@ -21,3 +25,9 @@ class Neuron:
         delta = error * (1 - (self.evaluate() ** 2))
         for i in range(len(self.weights)):
             self.weights[i] += self.learning_rate * delta * self.inputs[i]
+
+    def __str__(self) -> str:
+        return f"Neuron(w:{self.weights} | i:{self.inputs})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
